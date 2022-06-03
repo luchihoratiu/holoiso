@@ -47,8 +47,12 @@ less
 lftp
 libfido2
 libusb-compat
+<<<<<<< HEAD
 linux-neptune-dri
 linux-holoiso
+=======
+holoiso-beta/linux
+>>>>>>> e36bd4c (Packages: Kernel 5.18.1)
 linux-atm
 linux-firmware
 linux-firmware-marvell
