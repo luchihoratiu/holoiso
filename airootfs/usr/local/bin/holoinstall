@@ -92,12 +92,8 @@ base_os_install() {
 	echo "${UCODE_INSTALL_MSG}"
 	mount -t btrfs -o subvol=/,compress-force=zstd:1,discard,noatime,nodiratime ${root_partition} ${HOLO_INSTALL_DIR}
 	${CMD_MOUNT_BOOT}
-	pacstrap -i ${HOLO_INSTALL_DIR} base base-devel ${UCODE_INSTALL} linux-holoiso linux-holoiso-headers linux-neptune-dri linux-neptune-dri-headers linux-firmware
-	echo "Pacstrap complete. Rebuilding kernel modules."
-	sleep 2
-	arch-chroot ${HOLO_INSTALL_DIR} depmod -a $(ls /lib/modules)
-	arch-chroot ${HOLO_INSTALL_DIR} mkinitcpio -P
-	mount -t ext4 ${home_partition} ${HOLO_INSTALL_DIR}/home
+	pacstrap -i ${HOLO_INSTALL_DIR} base base-devel ${UCODE_INSTALL} linux linux-headers linux-firmware
+	${CMD_MOUNT_HOME}
 
 	echo "\nBase system installation done, generating fstab..."
 	genfstab -U -p /mnt >> /mnt/etc/fstab
@@ -187,7 +183,7 @@ full_install() {
 	    	elif [[ "${HOLO_GPU_TYPE}" == "2" ]]; then
 	        	echo "Installing gamescope for Intel GPUs..."
 			sed -i 's/linux-firmware/linux-firmware gamescope vulkan-intel lib32-vulkan-intel mesa lib32-mesa/g' ${HOLO_INSTALL_DIR}/etc/pacman.conf
-	        	GAMESCOPE_INSTALL=(/usr/bin/pacman --noconfirm -S --needed --overwrite="*" extra/vulkan-intel multilib/lib32-vulkan-intel extra/mesa multilib/lib32-mesa holo/gamescope)
+	        	GAMESCOPE_INSTALL=(/usr/bin/pacman --noconfirm -S --needed --overwrite="*" vulkan-intel lib32-vulkan-intel mesa lib32-mesa gamescope)
 			break
 	    	elif [[ "${HOLO_GPU_TYPE}" == "3" ]]; then
 	        	echo "Installing gamescope for NVIDIA GPUs..."
